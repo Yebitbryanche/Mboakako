@@ -1,4 +1,5 @@
 from sqlmodel import SQLModel, Field
+from typing import Optional
 from pydantic import EmailStr
 from passlib.context import CryptContext
 from datetime import datetime
@@ -14,7 +15,7 @@ class User(SQLModel, table=True):
     user_name: str = Field(index=True)
     email: EmailStr = Field(index=True)
     password_hash: str = Field(index=True)
-    role: str = Field(index=True)
+    role: str = Field(index=True, default="user")
 
     def set_password(self, password:str):
         self.password_hash = pwd_context.hash(password)
@@ -57,7 +58,7 @@ class Cart(SQLModel, table=True):
     __tablename__ = "Cart"
 
     id:int = Field(primary_key=True, default=None)
-    user_id = Field(foreign_key= "User.id")
+    user_id:int = Field(foreign_key= "User.id")
     created_at : datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -105,3 +106,17 @@ class UserActivity(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
+class Token(SQLModel):
+    access_token:str
+    token_type:str
+
+class TokenData(SQLModel):
+    username:Optional[str] = None
+
+
+
+class UserRead(SQLModel):
+    id:int
+    user_name:str
+    email:EmailStr
+    role:str
