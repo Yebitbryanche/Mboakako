@@ -15,7 +15,10 @@ class User(SQLModel, table=True):
     user_name: str = Field(index=True)
     email: EmailStr = Field(index=True)
     password_hash: str = Field(index=True)
-    role: str = Field(index=True, default="user")
+    role: bool = Field(index=True, default=False)
+
+    def set_role(self, role:bool):
+        self.role = role
 
     def set_password(self, password:str):
         self.password_hash = pwd_context.hash(password)
@@ -105,18 +108,3 @@ class UserActivity(SQLModel, table=True):
     product_id:int = Field(foreign_key=("Product.id"))
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-
-class Token(SQLModel):
-    access_token:str
-    token_type:str
-
-class TokenData(SQLModel):
-    username:Optional[str] = None
-
-
-
-class UserRead(SQLModel):
-    id:int
-    user_name:str
-    email:EmailStr
-    role:str
