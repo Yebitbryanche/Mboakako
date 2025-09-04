@@ -24,6 +24,9 @@ class User(SQLModel, table=True):
     def check_password(self, password:str) -> bool:
         return pwd_context.verify(password, self.password_hash)
     
+    def set_role(self, role:bool):
+        self.role = role
+    
 ## product table
 class Product(SQLModel, table=True):
     __tablename__ = "Product"
@@ -71,6 +74,8 @@ class CartItems(SQLModel, table=True):
     cart_id:int = Field(foreign_key=("Cart.id"))
     product_id:int = Field(foreign_key=("Product.id"))
     quantity:int = Field(default=1)
+    created_at : datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     
 
